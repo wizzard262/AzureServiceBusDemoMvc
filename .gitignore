@@ -1,0 +1,62 @@
+## Build results
+bin/
+obj/
+out/
+Debug/
+Release/
+
+## User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+## Visual Studio cache
+.vs/
+
+## ASP.NET Core generated files
+**/wwwroot/lib/
+**/wwwroot/dist/
+**/wwwroot/node_modules/
+
+## Logs
+*.log
+
+## Environment-specific config
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.local.json
+
+## Publish output
+publish/
+*.pubxml
+*.pubxml.user
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+## Node / Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+## Resharper / Rider
+_ReSharper*/
+*.DotSettings.user
+.idea/
+
+## Azure
+*.azurePubxml
+PublishProfiles/
+
+## Others
+*.dbmdl
+*.jfm
+*.pfx
+*.p12
+*.key
