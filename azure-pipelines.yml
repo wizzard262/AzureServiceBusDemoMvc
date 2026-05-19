@@ -31,6 +31,6 @@ steps:
 
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: 'AzureServiceConnectionName'
+    azureSubscription: 'AzureServiceConnectionNameResourceGroup1'
     appName: 'AzureServiceBusDemoMvc'
     package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
