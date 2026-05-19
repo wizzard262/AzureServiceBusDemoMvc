@@ -1,8 +1,11 @@
-﻿@model IndexViewModel
+﻿@model QueueViewModel
 
-<h2>Azure Service Bus Demo</h2>
+<div class="d-flex align-items-center mb-3">
+    <h2 class="me-3 mb-0">Azure Service Bus Demo</h2>
+    <img src="images/topics.png" style="height:80px;" />
+</div>
 
-<h4>1. Send – Adds a new message to the queue with DeliveryCount = 0.</h4>
+<h4>1. Send – Adds a new message to the Topic.</h4>
 <form method="post" asp-action="Send" class="d-flex gap-2">
     @Html.AntiForgeryToken()
     <input name="text"
@@ -10,7 +13,7 @@
            required
            class="form-control"
            style="width:400px;" />
-    <button type="submit" class="btn btn-primary">Queue Message</button>
+    <button type="submit" class="btn btn-primary">Send Message to Topic</button>
 </form>
 
 <hr />
@@ -100,4 +103,3 @@ This create a LockToken and starts the LockedUntil countdown.
         </div>
     </div>
 }
-TODO: Implement "Scheduled Messages", which allows a message to be "retry later"

@@ -4,15 +4,15 @@ using Mvc.Services;
 
 namespace Mvc.Controllers;
 
-public class HomeController(ServiceBusDemoService serviceBusDemoService) : Controller
+public class TopicController(AzureServiceBusTopicService serviceBusDemoService) : Controller
 {
-    private readonly ServiceBusDemoService _serviceBusDemoService = serviceBusDemoService;
+    private readonly AzureServiceBusTopicService _serviceBusDemoService = serviceBusDemoService;
 
     public async Task<IActionResult> Index()
     {
         var peeked = await _serviceBusDemoService.PeekAsync();
 
-        var model = new IndexViewModel
+        var model = new TopicViewModel
         {
             Peeked = peeked,
             Received = null
@@ -34,7 +34,7 @@ public class HomeController(ServiceBusDemoService serviceBusDemoService) : Contr
         var received = await _serviceBusDemoService.ReceiveAsync();
         var peeked = await _serviceBusDemoService.PeekAsync();
 
-        var model = new IndexViewModel
+        var model = new TopicViewModel
         {
             Peeked = peeked,
             Received = received
@@ -53,7 +53,7 @@ public class HomeController(ServiceBusDemoService serviceBusDemoService) : Contr
 
         var peeked = await _serviceBusDemoService.PeekAsync();
 
-        var model = new IndexViewModel
+        var model = new TopicViewModel
         {
             Peeked = peeked,
             Received = null
@@ -72,7 +72,7 @@ public class HomeController(ServiceBusDemoService serviceBusDemoService) : Contr
 
         var peeked = await _serviceBusDemoService.PeekAsync();
 
-        var model = new IndexViewModel
+        var model = new TopicViewModel
         {
             Peeked = peeked,
             Received = null
@@ -91,7 +91,7 @@ public class HomeController(ServiceBusDemoService serviceBusDemoService) : Contr
 
         var peeked = await _serviceBusDemoService.PeekAsync();
 
-        var model = new IndexViewModel
+        var model = new TopicViewModel
         {
             Peeked = peeked,
             Received = null

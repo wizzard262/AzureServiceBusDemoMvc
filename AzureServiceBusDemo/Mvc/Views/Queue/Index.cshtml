@@ -1,0 +1,106 @@
+﻿@model QueueViewModel
+
+<div class="d-flex align-items-center mb-3">
+    <h2 class="me-3 mb-0">Azure Service Bus Demo</h2>
+    <img src="images/queues.png" style="height:80px;" />
+</div>
+
+<h4>1. Send – Adds a new message to the queue (with DeliveryCount = 0)</h4>
+<form method="post" asp-action="Send" class="d-flex gap-2">
+    @Html.AntiForgeryToken()
+    <input name="text"
+           placeholder="Message body string (xml, json whatever)"
+           required
+           class="form-control"
+           style="width:400px;" />
+    <button type="submit" class="btn btn-primary">Send Message to Queue</button>
+</form>
+
+<hr />
+
+<h4>2. Peek – Reads messages without locking, removing, incrementing DeliveryCount. (max = 10)</h4>
+<table class="table table-bordered">
+    <tr>
+        <th class="bg-primary-subtle">Body</th>
+        <th class="bg-primary-subtle">Message Id</th>
+        <th class="bg-primary-subtle">Sequence Number</th>
+        <th class="bg-primary-subtle">Delivery Count</th>
+        <th class="bg-primary-subtle">Enqueued Time</th>
+    </tr>
+
+    @foreach (var m in Model.Peeked)
+    {
+        <tr>
+            <td>@System.Text.Encoding.UTF8.GetString(m.Body)</td>
+            <td>@m.MessageId</td>
+            <td>@m.SequenceNumber</td>
+            <td>@m.DeliveryCount</td>
+            <td>@m.EnqueuedTime</td>
+        </tr>
+    }
+</table>
+
+<hr />
+
+<h4>3. Receive (Peek‑Lock) – Locks oldest message for processing without deleting it.</h4>
+This create a LockToken and starts the LockedUntil countdown.
+<br />
+(When we receive and lock a message we cannot peek at any messages until the locked message is unlocked.)
+<br />
+<form method="post" asp-action="Receive" class="d-inline">
+    <button type="submit" class="btn btn-warning">Receive earliest queued message</button>
+</form>
+<hr />
+
+@if (Model.Received != null)
+{
+    <div class="card mb-3 bg-primary-subtle">
+        <div class="card-body">
+            <h3>4. Received (Peek-Locked) Message</h3>
+            <p><strong>Body:</strong> @System.Text.Encoding.UTF8.GetString(Model.Received.Body)</p>
+            <p><strong>Lock Token:</strong> @Model.Received.LockToken</p>
+            <p><strong>Locked Until:</strong> @Model.Received.LockedUntil.ToLocalTime()</p>
+            <p><strong>Enqueued Sequence Number:</strong> @Model.Received.EnqueuedSequenceNumber</p>
+
+            <hr />
+
+            <h4>Settlement Actions / message settlement operations - </h4>
+            <ul>
+                <li>
+
+                    A RECEIVED message will meet 1 of 4 fates:
+                    <ul>
+                        <li><strong>Complete</strong> – Marks the message as successfully processed and permanently removes it.</li>
+                        <li>
+                            <strong>Abandon</strong> – Releases the lock and returns the message to the queue for RETRY<br />
+                            This increments the DeliveryCount.<br />
+                            After X tries Abandon messages should be Dead-Lerttered to prevent “poison messages” forever retrying.
+                        </li>
+                        <li><strong>Dead‑Letter</strong> – Moves the message to the Dead‑Letter Queue because it cannot ever be processed</li>
+                        <li>
+                            <strong>Lock expires</strong><br /> - Releases the lock and returns the message to the queue for RETRY<br />
+                            Lock expires at LockedUntil countdown.<br />
+                            This increments the DeliveryCount.
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <form method="post" asp-action="Complete" class="d-inline">
+                <input type="hidden" name="lockToken" value="@Model.Received.LockToken" />
+                <button class="btn btn-success">Complete</button>
+            </form>
+
+            <form method="post" asp-action="Abandon" class="d-inline">
+                <input type="hidden" name="lockToken" value="@Model.Received.LockToken" />
+                <button class="btn btn-secondary">Abandon</button>
+            </form>
+
+            <form method="post" asp-action="DeadLetter" class="d-inline">
+                <input type="hidden" name="lockToken" value="@Model.Received.LockToken" />
+                <button class="btn btn-danger">Dead‑Letter</button>
+            </form>
+        </div>
+    </div>
+}
+TODO: Implement "Scheduled Messages", which allows a message to be "retry later"

@@ -26,25 +26,25 @@ namespace Mvc.Services;
     (even though it works locally using your developer identity), causing 500 errors.
 */
 
-public class ServiceBusDemoService
+public class AzureServiceBusTopicService
 {
-    private readonly string _queueName;
+    private readonly string _topicName;
     private readonly ServiceBusClient _serviceBusClient;
     private ServiceBusReceivedMessage _currentMessage;
     private ServiceBusReceiver _receiver;
 
-    public ServiceBusDemoService(IConfiguration config)
+    public AzureServiceBusTopicService(IConfiguration config)
     {
         var fullyQualifiedNamespace = config["ServiceBus:FullyQualifiedNamespace"];
         var tokenCredential = new DefaultAzureCredential();
-        _queueName = config["ServiceBus:QueueName"];
+        _topicName = config["ServiceBus:TopicName"];
         _serviceBusClient = new ServiceBusClient(fullyQualifiedNamespace, tokenCredential);
-        _receiver = _serviceBusClient.CreateReceiver(_queueName);
+        _receiver = _serviceBusClient.CreateReceiver(_topicName);
     }
 
     public async Task SendAsync(string body)
     {
-        var sender = _serviceBusClient.CreateSender(_queueName);
+        var sender = _serviceBusClient.CreateSender(_topicName);
         await sender.SendMessageAsync(new ServiceBusMessage(body));
     }
 
@@ -97,6 +97,6 @@ public class ServiceBusDemoService
 
     private void ResetReceiver()
     {
-        _receiver = _serviceBusClient.CreateReceiver(_queueName);
+        _receiver = _serviceBusClient.CreateReceiver(_topicName);
     }
 }

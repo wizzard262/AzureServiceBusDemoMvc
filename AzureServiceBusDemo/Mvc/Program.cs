@@ -3,7 +3,8 @@ using Mvc.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<ServiceBusDemoService>();
+builder.Services.AddSingleton<AzureServiceBusQueueService>();
+builder.Services.AddSingleton<AzureServiceBusTopicService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,7 +24,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Queue}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 app.Run();
