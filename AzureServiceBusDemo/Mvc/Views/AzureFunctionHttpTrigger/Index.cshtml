@@ -20,7 +20,7 @@
            style="width:400px;" />
     <button type="submit" class="btn btn-primary">Send Message to Queue</button>
 </form>
-
+Note: this is currently vulnerable to injection: &lt;div&gt;&lt;img src=x onerror=&quot;alert('Injected JS executed')&quot;&gt;&lt;/div&gt;
 <hr />
 
 <h4>3. Azure Function (triggered by Azure Service Bus queue message) picks up and processes the message</h4>
