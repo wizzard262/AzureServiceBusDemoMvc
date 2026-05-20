@@ -5,7 +5,8 @@
     <img src="images/queues.png" style="height:80px;" />
 </div>
 
-<h4>1. Send – Adds a new message to the queue (with DeliveryCount = 0)</h4>
+<h4>1. Send – Adds a new message to queue: demo-asb-queue</h4>
+New messages begin with DeliveryCount = 0.
 <form method="post" asp-action="Send" class="d-flex gap-2">
     @Html.AntiForgeryToken()
     <input name="text"

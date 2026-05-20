@@ -21,6 +21,9 @@
                     <li class="nav-item">
                         <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Topic" ? "active" : "")" href="/topic">Topic</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AzureFunctionHttpTrigger" ? "active" : "")" href="/azurefunctionhttptrigger">AzureFunctionHttpTrigger</a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -31,7 +34,7 @@
                 <li>GitHub Repository: <a href="https://github.com/wizzard262/AzureServiceBusDemoMvc">https://github.com/wizzard262/AzureServiceBusDemoMvc</a></li>
                 <li>Build & Deploy from Azure DevOps Pipeline: <a href="https://dev.azure.com/jones-steve/AzureServiceBusDemo/_build">https://dev.azure.com/jones-steve/AzureServiceBusDemo/_build</a></li>
                 <li>MVC webpage hosted on Azure: <a href="https://azureservicebusdemomvc-heh2hzd9b9akg9fk.ukwest-01.azurewebsites.net/">https://azureservicebusdemomvc-heh2hzd9b9akg9fk.ukwest-01.azurewebsites.net/</a> (Resource: AzureServiceBusDemoMvc)</li>
-                <li>Azure Service Bus namespace: wizzard262</li>
+                <li>Azure Service Bus namespace: wizzard262 Queues: demo-asb-queue & demo-asb-queue-triggers-azure-function</li>
             </ul>
         </div>
         @RenderBody()

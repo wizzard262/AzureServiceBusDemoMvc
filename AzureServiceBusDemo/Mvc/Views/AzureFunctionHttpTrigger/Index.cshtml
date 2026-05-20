@@ -1,0 +1,91 @@
+﻿<div class="d-flex align-items-center mb-3">
+    <h2 class="me-3 mb-0">Azure Function Service Bus Trigger / Signal R Demo</h2>
+    <img src="images/AsbAzureFunctionSignalR.png" style="height:80px;" />
+</div>
+
+<h4>1. SignalR negotiation and open Transport connection</h4>
+<ul>
+    <li>Initiate a negotiation request to the SignalR endpoint.</li>
+    <li>Receive: ConnectionId, Transport (WebSockets), SignalR service URL</li>
+</ul>
+
+<h4>2. Send – Adds a new message to queue</h4>
+<form id="sendForm" class="d-flex gap-2">
+    @Html.AntiForgeryToken()
+    <input name="text"
+           id="messageText"
+           placeholder="Message body string (xml, json whatever)"
+           required
+           class="form-control"
+           style="width:400px;" />
+    <button type="submit" class="btn btn-primary">Send Message to Queue</button>
+</form>
+
+<hr />
+
+<h4>3. Azure Function (triggered by Azure Service Bus queue message) picks up and processes the message</h4>
+<ul>
+    <li>Calls a method on the SignalR Hub (a server-side element in this MVC project)</li>
+    <li>SignalR Hub broadcasts the emessage to all subscribers</li>
+    <li>The Azure function is hosted at: https://weatherfunctionopenmeteo.azurewebsites.net/api/GetAzureServiceBusMessage</li>
+</ul>
+
+<h4>4. SignalR javascript in this page picks up the message and parses it into the HTML of this page below</h4>
+
+<div id="messages">
+    <p>Signal R message from ASB:</p>
+</div>
+
+<!-- register the SignalR script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+<script>
+    // only run after DOM has loaded
+    document.addEventListener("DOMContentLoaded", function () {
+        // -----------------------------
+        // 1. AJAX FORM SUBMISSION - 
+        // Note: If we submitted without ajax and the whole page refreshes
+        // the Signal R connection is broken.
+        // -----------------------------
+        const form = document.getElementById("sendForm");
+
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault(); // stop full page reload
+
+            const formData = new FormData(form);
+
+            const response = await fetch("@Url.Action("Send", "AzureFunctionHttpTrigger")", {
+                method: "POST",
+                body: formData
+            });
+
+            if (response.ok) {
+                console.log("Message sent to ASB");
+                document.getElementById("messageText").value = "";
+            } else {
+                console.error("Failed to send message");
+            }
+        });
+
+        // -----------------------------
+        // 2. SIGNALR CONNECTION
+        // -----------------------------
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/SignalRHub")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("ReceiveMessageFromAzureFunction", function (msg) {
+            console.log("Message from Azure Function:", msg);
+
+            // add messsage to HTML
+            const messages = document.getElementById("messages");
+            messages.insertAdjacentHTML("beforeend",
+                `<div style="color:red; font-weight:bold">${msg}</div>`);
+        });
+
+        connection.start()
+            .then(() => console.log("SignalR connected"))
+            .catch(err => console.error("SignalR connection error:", err));
+    });
+</script>

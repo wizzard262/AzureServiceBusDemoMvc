@@ -5,6 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<AzureServiceBusQueueService>();
 builder.Services.AddSingleton<AzureServiceBusTopicService>();
+builder.Services.AddSingleton<SignalRAzureServiceBusQueueService>();
+builder.Services.AddSingleton<SignalRHubService>();
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,6 +24,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.MapHub<SignalRHubService>("/SignalRHub");
 
 app.MapControllerRoute(
     name: "default",
